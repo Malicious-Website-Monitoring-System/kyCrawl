@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crawled Links</title>
+  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const socket = io();
+
+      socket.on('update', function(data) {
+        const urlList = document.getElementById('url-list');
+        const urlItem = document.createElement('div');
+        urlItem.innerHTML = `<h3>${data.url}</h3><ul>${data.urls.map(url => `<li><a href="${url}" target="_blank">${url}</a></li>`).join('')}</ul>`;
+        urlList.appendChild(urlItem);
+      });
+    });
+  </script>
+</head>
+<body>
+  <h1>Crawled Links</h1>
+  <button onclick="startCrawl()">Start Crawling</button>
+  <div id="url-list"></div>
+  <script>
+    function startCrawl() {
+      fetch('/start-crawl')
+        .then(response => response.text())
+        .then(data => {
+          console.log(data);
+        });
+    }
+  </script>
+</body>
+</html>
